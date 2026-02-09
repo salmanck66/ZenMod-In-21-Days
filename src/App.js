@@ -186,7 +186,7 @@ const LifeSuccessJourney = () => {
       <div className="max-w-md mx-auto">
         <div className="text-center mb-8 pt-6">
           <h1 className="text-4xl font-black uppercase tracking-tight mb-2">
-            Life Success
+            Zen 2-1 Mode 
           </h1>
           <div className="w-16 h-1 bg-black mx-auto mb-3"></div>
           <p className="text-sm text-gray-600 uppercase tracking-wide font-medium">21-Day Journey</p>
