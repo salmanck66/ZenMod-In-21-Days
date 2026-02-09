@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, Plus, Trash2, Trophy, Target, Sparkles, Star } from 'lucide-react';
+import { Clock, Plus, Trash2, Trophy, Target, Star } from 'lucide-react';
 
 const defaultActivities = [
   { id: 1, name: 'Wake Up', time: '06:00', icon: '🌅', isPermanent: true },
@@ -181,60 +181,60 @@ const LifeSuccessJourney = () => {
   const todayQuote = motivationalQuotes[currentDay % motivationalQuotes.length];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white p-4 pb-20">
+    <div className="min-h-screen bg-white text-black p-4 pb-20">
       {/* Header */}
       <div className="max-w-md mx-auto">
-        <div className="text-center mb-6 pt-4">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Sparkles className="w-8 h-8 text-yellow-400" />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-200 to-pink-200 bg-clip-text text-transparent">
-              ZenMod - Your 21-Day Life Success Journey
-            </h1>
-          </div>
-          <p className="text-purple-200 text-sm">Transform your life, one habit at a time</p>
+        <div className="text-center mb-8 pt-6">
+          <h1 className="text-4xl font-black uppercase tracking-tight mb-2">
+            Life Success
+          </h1>
+          <div className="w-16 h-1 bg-black mx-auto mb-3"></div>
+          <p className="text-sm text-gray-600 uppercase tracking-wide font-medium">21-Day Journey</p>
         </div>
 
         {/* Level Badge */}
-        <div className={`bg-gradient-to-r ${level.color} rounded-2xl p-6 mb-6 shadow-2xl`}>
+        <div className="bg-black text-white rounded-none p-8 mb-8 border-4 border-black">
           <div className="text-center">
-            <div className="text-5xl mb-2">{level.icon}</div>
-            <h2 className="text-2xl font-bold mb-1">{level.name}</h2>
-            <p className="text-sm opacity-90">Day {currentDay} of 21</p>
-            <div className="mt-4 bg-white bg-opacity-20 rounded-full h-3 overflow-hidden">
+            <div className="text-5xl mb-3">{level.icon}</div>
+            <h2 className="text-2xl font-black uppercase tracking-tight mb-2">{level.name}</h2>
+            <p className="text-sm opacity-90 font-medium">DAY {currentDay} OF 21</p>
+            <div className="mt-4 bg-white h-2 overflow-hidden">
               <div 
-                className="h-full bg-white transition-all duration-500"
+                className="h-full bg-black transition-all duration-500"
                 style={{ width: `${(currentDay / 21) * 100}%` }}
               />
             </div>
-            <p className="text-xs mt-2 opacity-75">{currentDay} / 21 days completed</p>
+            <p className="text-xs mt-2 opacity-75 font-medium uppercase tracking-wide">
+              {currentDay} / 21 DAYS
+            </p>
           </div>
         </div>
 
         {/* Today's Progress */}
-        <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-6 mb-6 shadow-xl">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xl font-semibold flex items-center gap-2">
+        <div className="border-4 border-black rounded-none p-6 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-black uppercase tracking-tight flex items-center gap-2">
               <Target className="w-5 h-5" />
-              Today's Progress
+              TODAY
             </h3>
-            <span className="text-3xl font-bold text-yellow-300">{todayPercentage}%</span>
+            <span className="text-4xl font-black">{todayPercentage}%</span>
           </div>
-          <div className="bg-white bg-opacity-20 rounded-full h-4 overflow-hidden mb-3">
+          <div className="bg-gray-200 h-3 overflow-hidden">
             <div 
-              className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-500"
+              className="h-full bg-black transition-all duration-500"
               style={{ width: `${todayPercentage}%` }}
             />
           </div>
-          <p className="text-center text-yellow-200 italic text-sm">"{todayQuote}"</p>
+          <p className="text-center text-black italic text-sm mt-4 font-medium">"{todayQuote}"</p>
         </div>
 
         {/* Activities List */}
-        <div className="space-y-3 mb-6">
+        <div className="space-y-4 mb-8">
           {activities.filter(activity => !completedToday.includes(activity.id)).length === 0 ? (
-            <div className="bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl p-8 text-center animate-pulse">
+            <div className="bg-black text-white rounded-none p-10 text-center">
               <div className="text-6xl mb-4">🎉</div>
-              <h3 className="text-2xl font-bold mb-2">Yay! You're all set!</h3>
-              <p className="text-lg">See you tomorrow, champion! 💪</p>
+              <h3 className="text-2xl font-black uppercase mb-3">ALL DONE!</h3>
+              <p className="text-lg font-medium">See you tomorrow, champion!</p>
             </div>
           ) : (
             activities
@@ -242,35 +242,35 @@ const LifeSuccessJourney = () => {
               .map(activity => (
                 <div 
                   key={activity.id}
-                  className="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-4 transition-all border-2 border-transparent hover:border-purple-400"
+                  className="border-2 border-black rounded-none p-4 transition-all hover:bg-black hover:text-white group"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3 flex-1">
+                    <div className="flex items-center gap-4 flex-1">
                       <span className="text-3xl">{activity.icon}</span>
                       <div className="flex-1">
-                        <h4 className="font-semibold">{activity.name}</h4>
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-3 h-3 text-purple-200" />
+                        <h4 className="font-black uppercase tracking-tight text-lg">{activity.name}</h4>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Clock className="w-3 h-3" />
                           <input
                             type="time"
                             value={activity.time}
                             onChange={(e) => updateActivityTime(activity.id, e.target.value)}
-                            className="bg-transparent text-xs text-purple-200 border-none outline-none cursor-pointer hover:text-white"
+                            className="bg-transparent text-sm border-none outline-none cursor-pointer font-medium group-hover:text-white"
                           />
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       <button
                         onClick={() => toggleActivity(activity.id)}
-                        className="w-10 h-10 rounded-full flex items-center justify-center transition-all bg-white bg-opacity-20 hover:bg-opacity-30 hover:bg-green-500"
+                        className="w-12 h-12 border-2 border-black group-hover:border-white rounded-full flex items-center justify-center transition-all hover:bg-white hover:text-black"
                       >
-                        <span className="w-5 h-5" />
+                        <span className="text-xl">✓</span>
                       </button>
                       {!activity.isPermanent && (
                         <button
                           onClick={() => deleteActivity(activity.id)}
-                          className="w-8 h-8 rounded-full bg-red-500 bg-opacity-50 hover:bg-opacity-70 flex items-center justify-center transition-all"
+                          className="w-10 h-10 bg-black text-white group-hover:bg-white group-hover:text-black rounded-full flex items-center justify-center transition-all"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -286,50 +286,50 @@ const LifeSuccessJourney = () => {
         {!showAddForm && (
           <button
             onClick={() => setShowAddForm(true)}
-            className="w-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl p-4 font-semibold flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-purple-500/50 transition-all mb-4"
+            className="w-full bg-black text-white rounded-none p-4 font-black uppercase tracking-wide flex items-center justify-center gap-2 hover:bg-gray-800 transition-all mb-4 border-4 border-black"
           >
             <Plus className="w-5 h-5" />
-            Add New Activity
+            Add Activity
           </button>
         )}
 
         {/* Add Activity Form */}
         {showAddForm && (
-          <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-4 mb-4">
-            <h3 className="font-semibold mb-3">Add New Activity</h3>
+          <div className="border-4 border-black rounded-none p-6 mb-4 bg-white">
+            <h3 className="font-black uppercase tracking-tight mb-4 text-lg">New Activity</h3>
             <input
               type="text"
-              placeholder="Activity name"
+              placeholder="ACTIVITY NAME"
               value={newActivity.name}
               onChange={(e) => setNewActivity({...newActivity, name: e.target.value})}
-              className="w-full bg-white bg-opacity-20 rounded-lg p-2 mb-2 text-white placeholder-purple-200"
+              className="w-full border-2 border-black rounded-none p-3 mb-3 text-black placeholder-gray-400 uppercase font-medium focus:outline-none focus:border-gray-600"
             />
             <input
               type="text"
-              placeholder="Icon (emoji)"
+              placeholder="ICON (EMOJI)"
               value={newActivity.icon}
               onChange={(e) => setNewActivity({...newActivity, icon: e.target.value})}
-              className="w-full bg-white bg-opacity-20 rounded-lg p-2 mb-2 text-white placeholder-purple-200"
+              className="w-full border-2 border-black rounded-none p-3 mb-3 text-black placeholder-gray-400 uppercase font-medium focus:outline-none focus:border-gray-600"
             />
-            <div className="mb-3">
-              <label className="text-xs text-purple-200 mb-1 block">Time</label>
+            <div className="mb-4">
+              <label className="text-xs font-black uppercase tracking-wide mb-2 block">Time</label>
               <input
                 type="time"
                 value={newActivity.time}
                 onChange={(e) => setNewActivity({...newActivity, time: e.target.value})}
-                className="w-full bg-white bg-opacity-20 rounded-lg p-2 text-white"
+                className="w-full border-2 border-black rounded-none p-3 text-black font-medium focus:outline-none focus:border-gray-600"
               />
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <button
                 onClick={addActivity}
-                className="flex-1 bg-green-500 rounded-lg p-2 font-semibold hover:bg-green-600 transition-all"
+                className="flex-1 bg-black text-white rounded-none p-3 font-black uppercase hover:bg-gray-800 transition-all"
               >
                 Add
               </button>
               <button
                 onClick={() => setShowAddForm(false)}
-                className="flex-1 bg-red-500 rounded-lg p-2 font-semibold hover:bg-red-600 transition-all"
+                className="flex-1 border-2 border-black text-black rounded-none p-3 font-black uppercase hover:bg-black hover:text-white transition-all"
               >
                 Cancel
               </button>
@@ -340,7 +340,7 @@ const LifeSuccessJourney = () => {
         {/* Complete Day Button */}
         <button
           onClick={completeDay}
-          className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl p-4 font-bold text-lg flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-yellow-500/50 transition-all mb-4"
+          className="w-full bg-black text-white rounded-none p-5 font-black uppercase text-lg tracking-wide flex items-center justify-center gap-3 hover:bg-gray-800 transition-all mb-4 border-4 border-black"
         >
           <Trophy className="w-6 h-6" />
           Complete Day {currentDay}
@@ -349,31 +349,31 @@ const LifeSuccessJourney = () => {
         {/* Reset Button */}
         <button
           onClick={resetCycle}
-          className="w-full bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-3 text-sm hover:bg-opacity-20 transition-all mb-6"
+          className="w-full border-2 border-black text-black rounded-none p-3 text-sm font-black uppercase tracking-wide hover:bg-black hover:text-white transition-all mb-8"
         >
           Reset Cycle
         </button>
 
         {/* Cycle Progress */}
         {cycleData.length > 0 && (
-          <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-4 mb-6">
-            <h3 className="font-semibold mb-3 flex items-center gap-2">
-              <Star className="w-5 h-5 text-yellow-400" />
-              Journey History
+          <div className="border-4 border-black rounded-none p-6 mb-8 bg-white">
+            <h3 className="font-black uppercase tracking-tight mb-4 flex items-center gap-2 text-lg">
+              <Star className="w-5 h-5" />
+              History
             </h3>
-            <div className="grid grid-cols-7 gap-2">
+            <div className="grid grid-cols-7 gap-3">
               {cycleData.map((day, idx) => (
                 <div key={idx} className="text-center">
                   <div 
-                    className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold ${
-                      day.percentage >= 80 ? 'bg-green-500' :
-                      day.percentage >= 50 ? 'bg-yellow-500' :
-                      'bg-red-500'
+                    className={`w-12 h-12 border-2 border-black flex items-center justify-center text-xs font-black ${
+                      day.percentage >= 80 ? 'bg-black text-white' :
+                      day.percentage >= 50 ? 'bg-gray-300 text-black' :
+                      'bg-white text-black'
                     }`}
                   >
                     {day.percentage}%
                   </div>
-                  <p className="text-xs mt-1 text-purple-200">D{day.day}</p>
+                  <p className="text-xs mt-1 font-bold">D{day.day}</p>
                 </div>
               ))}
             </div>
@@ -381,9 +381,9 @@ const LifeSuccessJourney = () => {
         )}
 
         {/* Footer */}
-        <div className="text-center text-purple-200 text-xs pt-4 border-t border-white border-opacity-20">
-          <p>Developed by <a href="https://github.com/salmanck66" target="_blank" rel="noopener noreferrer" className="text-yellow-300 hover:text-yellow-400 underline">github.com/salmanck66</a></p>
-          <p className="mt-1">For more apps like this, visit my GitHub</p>
+        <div className="text-center text-gray-600 text-xs pt-6 border-t-2 border-black">
+          <p className="uppercase tracking-wide font-medium">Developed by <a href="https://github.com/salmanck66" target="_blank" rel="noopener noreferrer" className="text-black font-black hover:underline">SALMANCK66</a></p>
+          <p className="mt-1 uppercase tracking-wide">More apps on GitHub</p>
         </div>
       </div>
     </div>
