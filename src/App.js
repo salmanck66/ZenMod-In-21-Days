@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, Plus, Trash2, Check, Trophy, Target, Sparkles, Star } from 'lucide-react';
 
+const defaultActivities = [
+  { id: 1, name: 'Wake Up', startTime: '06:00', endTime: '06:30', icon: '🌅' },
+  { id: 2, name: 'Prayer', startTime: '06:30', endTime: '07:00', icon: '🙏' },
+  { id: 3, name: 'Workout', startTime: '07:00', endTime: '08:00', icon: '💪' },
+  { id: 4, name: 'Read Book', startTime: '20:00', endTime: '21:00', icon: '📚' },
+  { id: 5, name: 'Sleep', startTime: '22:00', endTime: '22:30', icon: '😴' },
+];
+
 const LifeSuccessJourney = () => {
-  const defaultActivities = [
-    { id: 1, name: 'Wake Up', startTime: '06:00', endTime: '06:30', icon: '🌅' },
-    { id: 2, name: 'Prayer', startTime: '06:30', endTime: '07:00', icon: '🙏' },
-    { id: 3, name: 'Workout', startTime: '07:00', endTime: '08:00', icon: '💪' },
-    { id: 4, name: 'Read Book', startTime: '20:00', endTime: '21:00', icon: '📚' },
-    { id: 5, name: 'Sleep', startTime: '22:00', endTime: '22:30', icon: '😴' },
-  ];
 
   const motivationalQuotes = [
     "Every journey begins with a single step!",
