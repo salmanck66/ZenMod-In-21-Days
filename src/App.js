@@ -226,48 +226,49 @@ const LifeSuccessJourney = () => {
 
         {/* Activities List */}
         <div className="space-y-3 mb-6">
-          {activities.map(activity => {
-            const isCompleted = completedToday.includes(activity.id);
-            return (
-              <div 
-                key={activity.id}
-                className={`bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-4 transition-all ${
-                  isCompleted ? 'bg-green-500 bg-opacity-30 border-2 border-green-400' : 'border-2 border-transparent'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 flex-1">
-                    <span className="text-3xl">{activity.icon}</span>
-                    <div className="flex-1">
-                      <h4 className="font-semibold">{activity.name}</h4>
-                      <p className="text-xs text-purple-200 flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {activity.startTime} - {activity.endTime}
-                      </p>
+          {activities.filter(activity => !completedToday.includes(activity.id)).length === 0 ? (
+            <div className="bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl p-8 text-center animate-pulse">
+              <div className="text-6xl mb-4">🎉</div>
+              <h3 className="text-2xl font-bold mb-2">Yay! You're all set!</h3>
+              <p className="text-lg">See you tomorrow, champion! 💪</p>
+            </div>
+          ) : (
+            activities
+              .filter(activity => !completedToday.includes(activity.id))
+              .map(activity => (
+                <div 
+                  key={activity.id}
+                  className="bg-white bg-opacity-10 backdrop-blur-lg rounded-xl p-4 transition-all border-2 border-transparent hover:border-purple-400"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 flex-1">
+                      <span className="text-3xl">{activity.icon}</span>
+                      <div className="flex-1">
+                        <h4 className="font-semibold">{activity.name}</h4>
+                        <p className="text-xs text-purple-200 flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {activity.startTime} - {activity.endTime}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => toggleActivity(activity.id)}
+                        className="w-10 h-10 rounded-full flex items-center justify-center transition-all bg-white bg-opacity-20 hover:bg-opacity-30 hover:bg-green-500"
+                      >
+                        <span className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => deleteActivity(activity.id)}
+                        className="w-8 h-8 rounded-full bg-red-500 bg-opacity-50 hover:bg-opacity-70 flex items-center justify-center transition-all"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => toggleActivity(activity.id)}
-                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                        isCompleted 
-                          ? 'bg-green-500 shadow-lg shadow-green-500/50' 
-                          : 'bg-white bg-opacity-20 hover:bg-opacity-30'
-                      }`}
-                    >
-                      {isCompleted ? <Check className="w-5 h-5" /> : <span className="w-5 h-5" />}
-                    </button>
-                    <button
-                      onClick={() => deleteActivity(activity.id)}
-                      className="w-8 h-8 rounded-full bg-red-500 bg-opacity-50 hover:bg-opacity-70 flex items-center justify-center transition-all"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
                 </div>
-              </div>
-            );
-          })}
+              ))
+          )}
         </div>
 
         {/* Add Activity Button */}
