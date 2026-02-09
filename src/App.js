@@ -188,7 +188,7 @@ const LifeSuccessJourney = () => {
           <div className="flex items-center justify-center gap-2 mb-2">
             <Sparkles className="w-8 h-8 text-yellow-400" />
             <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-200 to-pink-200 bg-clip-text text-transparent">
-              Life Success Journey
+              ZenMod - Your 21-Day Life Success Journey
             </h1>
           </div>
           <p className="text-purple-200 text-sm">Transform your life, one habit at a time</p>
