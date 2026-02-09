@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, Plus, Trash2, Check, Trophy, Target, Sparkles, Star } from 'lucide-react';
+import { Clock, Plus, Trash2, Trophy, Target, Sparkles, Star } from 'lucide-react';
 
 const defaultActivities = [
   { id: 1, name: 'Wake Up', startTime: '06:00', endTime: '06:30', icon: '🌅' },
