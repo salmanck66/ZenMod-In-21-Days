@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Clock, Plus, Trash2, Trophy, Target, Star } from 'lucide-react';
 
 const defaultActivities = [
-  { id: 1, name: 'Wake Up', time: '06:00', icon: '🌅', isPermanent: true },
-  { id: 2, name: 'Prayer', time: '06:30', icon: '🙏', isPermanent: false },
-  { id: 3, name: 'Workout', time: '07:00', icon: '💪', isPermanent: false },
-  { id: 4, name: 'Read Book', time: '20:00', icon: '📚', isPermanent: false },
-  { id: 5, name: 'Sleep', time: '22:00', icon: '😴', isPermanent: true },
+  { id: 1, name: 'Wake Up', time: '06:00', icon: '🌅', isPermanent: true, type: 'single' },
+  { id: 2, name: 'Prayer', startTime: '06:30', endTime: '07:00', icon: '🙏', isPermanent: false, type: 'range' },
+  { id: 3, name: 'Workout', startTime: '07:00', endTime: '08:00', icon: '💪', isPermanent: false, type: 'range' },
+  { id: 4, name: 'Read Book', startTime: '20:00', endTime: '21:00', icon: '📚', isPermanent: false, type: 'range' },
+  { id: 5, name: 'Sleep', time: '22:00', icon: '😴', isPermanent: true, type: 'single' },
 ];
 
 const LifeSuccessJourney = () => {
@@ -49,7 +49,7 @@ const LifeSuccessJourney = () => {
   const [currentDay, setCurrentDay] = useState(1);
   const [showAddForm, setShowAddForm] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [newActivity, setNewActivity] = useState({ name: '', time: '', icon: '✨' });
+  const [newActivity, setNewActivity] = useState({ name: '', startTime: '', endTime: '', icon: '✨' });
 
   // Load data from localStorage
   useEffect(() => {
@@ -94,12 +94,32 @@ const LifeSuccessJourney = () => {
       const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
       activities.forEach(activity => {
-        // Time notification
-        if (activity.time === currentTime && !completedToday.includes(activity.id)) {
+        if (completedToday.includes(activity.id)) return;
+
+        // For single time activities (Wake Up, Sleep)
+        if (activity.type === 'single' && activity.time === currentTime) {
           new Notification('Time for your activity!', {
             body: `${activity.icon} ${activity.name} - Let's do this!`,
             icon: '🎯'
           });
+        }
+        
+        // For range activities (Prayer, Workout, etc.)
+        if (activity.type === 'range') {
+          // Start notification
+          if (activity.startTime === currentTime) {
+            new Notification('Time to start!', {
+              body: `${activity.icon} ${activity.name} - Let's do this!`,
+              icon: '🎯'
+            });
+          }
+          // End notification
+          if (activity.endTime === currentTime) {
+            new Notification('Activity ending soon!', {
+              body: `${activity.icon} ${activity.name} - Have you finished?`,
+              icon: '⏰'
+            });
+          }
         }
       });
     };
@@ -124,16 +144,29 @@ const LifeSuccessJourney = () => {
   };
 
   const addActivity = () => {
-    if (newActivity.name && newActivity.time) {
+    if (newActivity.name && newActivity.startTime && newActivity.endTime) {
       const activity = {
         id: Date.now(),
         ...newActivity,
-        isPermanent: false
+        isPermanent: false,
+        type: 'range'
       };
-      setActivities([...activities, activity]);
-      setNewActivity({ name: '', time: '', icon: '✨' });
+      setActivities(sortActivities([...activities, activity]));
+      setNewActivity({ name: '', startTime: '', endTime: '', icon: '✨' });
       setShowAddForm(false);
     }
+  };
+
+  const sortActivities = (activitiesList) => {
+    const wakeUp = activitiesList.find(a => a.name === 'Wake Up');
+    const sleep = activitiesList.find(a => a.name === 'Sleep');
+    const others = activitiesList.filter(a => a.name !== 'Wake Up' && a.name !== 'Sleep');
+    
+    return [
+      ...(wakeUp ? [wakeUp] : []),
+      ...others,
+      ...(sleep ? [sleep] : [])
+    ];
   };
 
   const deleteActivity = (id) => {
@@ -149,6 +182,12 @@ const LifeSuccessJourney = () => {
   const updateActivityTime = (id, newTime) => {
     setActivities(activities.map(a => 
       a.id === id ? { ...a, time: newTime } : a
+    ));
+  };
+
+  const updateActivityRange = (id, field, value) => {
+    setActivities(activities.map(a => 
+      a.id === id ? { ...a, [field]: value } : a
     ));
   };
 
@@ -186,7 +225,7 @@ const LifeSuccessJourney = () => {
       <div className="max-w-md mx-auto">
         <div className="text-center mb-8 pt-6">
           <h1 className="text-4xl font-black uppercase tracking-tight mb-2">
-            Zen 2-1 Mode 
+            Zen21
           </h1>
           <div className="w-16 h-1 bg-black mx-auto mb-3"></div>
           <p className="text-sm text-gray-600 uppercase tracking-wide font-medium">21-Day Journey</p>
@@ -249,15 +288,34 @@ const LifeSuccessJourney = () => {
                       <span className="text-3xl">{activity.icon}</span>
                       <div className="flex-1">
                         <h4 className="font-black uppercase tracking-tight text-lg">{activity.name}</h4>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Clock className="w-3 h-3" />
-                          <input
-                            type="time"
-                            value={activity.time}
-                            onChange={(e) => updateActivityTime(activity.id, e.target.value)}
-                            className="bg-transparent text-sm border-none outline-none cursor-pointer font-medium group-hover:text-white"
-                          />
-                        </div>
+                        {activity.type === 'single' ? (
+                          <div className="flex items-center gap-2 mt-1">
+                            <Clock className="w-3 h-3" />
+                            <input
+                              type="time"
+                              value={activity.time}
+                              onChange={(e) => updateActivityTime(activity.id, e.target.value)}
+                              className="bg-transparent text-sm border-none outline-none cursor-pointer font-medium group-hover:text-white"
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2 mt-1">
+                            <Clock className="w-3 h-3" />
+                            <input
+                              type="time"
+                              value={activity.startTime}
+                              onChange={(e) => updateActivityRange(activity.id, 'startTime', e.target.value)}
+                              className="bg-transparent text-sm border-none outline-none cursor-pointer font-medium group-hover:text-white w-16"
+                            />
+                            <span className="text-sm font-medium">-</span>
+                            <input
+                              type="time"
+                              value={activity.endTime}
+                              onChange={(e) => updateActivityRange(activity.id, 'endTime', e.target.value)}
+                              className="bg-transparent text-sm border-none outline-none cursor-pointer font-medium group-hover:text-white w-16"
+                            />
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -311,14 +369,25 @@ const LifeSuccessJourney = () => {
               onChange={(e) => setNewActivity({...newActivity, icon: e.target.value})}
               className="w-full border-2 border-black rounded-none p-3 mb-3 text-black placeholder-gray-400 uppercase font-medium focus:outline-none focus:border-gray-600"
             />
-            <div className="mb-4">
-              <label className="text-xs font-black uppercase tracking-wide mb-2 block">Time</label>
-              <input
-                type="time"
-                value={newActivity.time}
-                onChange={(e) => setNewActivity({...newActivity, time: e.target.value})}
-                className="w-full border-2 border-black rounded-none p-3 text-black font-medium focus:outline-none focus:border-gray-600"
-              />
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div>
+                <label className="text-xs font-black uppercase tracking-wide mb-2 block">Start Time</label>
+                <input
+                  type="time"
+                  value={newActivity.startTime}
+                  onChange={(e) => setNewActivity({...newActivity, startTime: e.target.value})}
+                  className="w-full border-2 border-black rounded-none p-3 text-black font-medium focus:outline-none focus:border-gray-600"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-black uppercase tracking-wide mb-2 block">End Time</label>
+                <input
+                  type="time"
+                  value={newActivity.endTime}
+                  onChange={(e) => setNewActivity({...newActivity, endTime: e.target.value})}
+                  className="w-full border-2 border-black rounded-none p-3 text-black font-medium focus:outline-none focus:border-gray-600"
+                />
+              </div>
             </div>
             <div className="flex gap-3">
               <button
