@@ -35,6 +35,96 @@ const LifeSuccessJourney = () => {
     "You've got this, champion!"
   ];
 
+  const themeConfig = {
+    dark: {
+      name: 'Dark',
+      bg: 'bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900',
+      text: 'text-white',
+      border: 'border-white',
+      cardBg: 'bg-white bg-opacity-10',
+      levelBg: 'bg-gradient-to-br from-purple-600 to-indigo-600',
+      levelBorder: 'border-purple-400',
+      progressBg: 'bg-gray-700',
+      progressFill: 'bg-purple-500',
+      btnPrimary: 'bg-gradient-to-r from-purple-600 to-indigo-600 border-purple-400',
+      btnSecondary: 'bg-white text-black',
+      inputBg: 'bg-gray-700',
+      inputBorder: 'border-white',
+      hoverBg: 'hover:bg-white hover:text-black',
+      completionBg: 'bg-gradient-to-br from-green-600 to-emerald-600 border-green-400'
+    },
+    light: {
+      name: 'Light',
+      bg: 'bg-white',
+      text: 'text-black',
+      border: 'border-black',
+      cardBg: 'bg-white',
+      levelBg: 'bg-black',
+      levelBorder: 'border-black',
+      progressBg: 'bg-gray-200',
+      progressFill: 'bg-black',
+      btnPrimary: 'bg-black border-black',
+      btnSecondary: 'bg-white text-black border-black',
+      inputBg: 'bg-white',
+      inputBorder: 'border-black',
+      hoverBg: 'hover:bg-black hover:text-white',
+      completionBg: 'bg-black border-black'
+    },
+    ocean: {
+      name: 'Ocean',
+      bg: 'bg-gradient-to-br from-blue-900 via-cyan-800 to-teal-900',
+      text: 'text-white',
+      border: 'border-cyan-300',
+      cardBg: 'bg-white bg-opacity-10',
+      levelBg: 'bg-gradient-to-br from-cyan-600 to-blue-600',
+      levelBorder: 'border-cyan-400',
+      progressBg: 'bg-blue-800',
+      progressFill: 'bg-cyan-400',
+      btnPrimary: 'bg-gradient-to-r from-cyan-600 to-blue-600 border-cyan-400',
+      btnSecondary: 'bg-cyan-400 text-black',
+      inputBg: 'bg-blue-800',
+      inputBorder: 'border-cyan-300',
+      hoverBg: 'hover:bg-cyan-400 hover:text-black',
+      completionBg: 'bg-gradient-to-br from-teal-600 to-emerald-600 border-teal-400'
+    },
+    forest: {
+      name: 'Forest',
+      bg: 'bg-gradient-to-br from-green-900 via-emerald-800 to-lime-900',
+      text: 'text-white',
+      border: 'border-green-300',
+      cardBg: 'bg-white bg-opacity-10',
+      levelBg: 'bg-gradient-to-br from-emerald-600 to-green-600',
+      levelBorder: 'border-green-400',
+      progressBg: 'bg-green-800',
+      progressFill: 'bg-lime-400',
+      btnPrimary: 'bg-gradient-to-r from-emerald-600 to-green-600 border-green-400',
+      btnSecondary: 'bg-lime-400 text-black',
+      inputBg: 'bg-green-800',
+      inputBorder: 'border-green-300',
+      hoverBg: 'hover:bg-lime-400 hover:text-black',
+      completionBg: 'bg-gradient-to-br from-lime-600 to-green-600 border-lime-400'
+    },
+    sunset: {
+      name: 'Sunset',
+      bg: 'bg-gradient-to-br from-orange-900 via-red-800 to-pink-900',
+      text: 'text-white',
+      border: 'border-orange-300',
+      cardBg: 'bg-white bg-opacity-10',
+      levelBg: 'bg-gradient-to-br from-orange-600 to-red-600',
+      levelBorder: 'border-orange-400',
+      progressBg: 'bg-red-800',
+      progressFill: 'bg-orange-400',
+      btnPrimary: 'bg-gradient-to-r from-orange-600 to-red-600 border-orange-400',
+      btnSecondary: 'bg-orange-400 text-black',
+      inputBg: 'bg-red-800',
+      inputBorder: 'border-orange-300',
+      hoverBg: 'hover:bg-orange-400 hover:text-black',
+      completionBg: 'bg-gradient-to-br from-yellow-600 to-orange-600 border-yellow-400'
+    }
+  };
+
+  const currentTheme = themeConfig[theme];
+
   const getLevelInfo = (completedDays) => {
     if (completedDays >= 30) return { name: 'Zen Master', icon: '🧘', color: 'from-purple-500 to-pink-500', days: 30 };
     if (completedDays >= 21) return { name: 'Master', icon: '👑', color: 'from-yellow-400 to-orange-500', days: 21 };
@@ -49,7 +139,7 @@ const LifeSuccessJourney = () => {
   const [currentDay, setCurrentDay] = useState(1);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [theme, setTheme] = useState('dark'); // 'dark', 'light', 'ocean', 'forest', 'sunset'
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [newActivity, setNewActivity] = useState({ name: '', startTime: '', endTime: '', icon: '✨' });
 
@@ -62,7 +152,7 @@ const LifeSuccessJourney = () => {
       setCycleData(data.cycleData || []);
       setCurrentDay(data.currentDay || 1);
       setCompletedToday(data.completedToday || []);
-      setDarkMode(data.darkMode || false);
+      setTheme(data.theme || 'dark');
     } else {
       setActivities(defaultActivities);
     }
@@ -84,10 +174,10 @@ const LifeSuccessJourney = () => {
       cycleData,
       currentDay,
       completedToday,
-      darkMode,
+      theme,
       lastSaved: new Date().toISOString()
     }));
-  }, [activities, cycleData, currentDay, completedToday, darkMode]);
+  }, [activities, cycleData, currentDay, completedToday, theme]);
 
   // Check for notifications
   useEffect(() => {
@@ -224,11 +314,7 @@ const LifeSuccessJourney = () => {
   const todayQuote = motivationalQuotes[currentDay % motivationalQuotes.length];
 
   return (
-    <div className={`min-h-screen p-4 pb-20 transition-colors duration-300 ${
-      darkMode 
-        ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 text-white' 
-        : 'bg-white text-black'
-    }`}>
+    <div className={`min-h-screen p-4 pb-20 transition-colors duration-300 ${currentTheme.bg} ${currentTheme.text}`}>
       {/* Header */}
       <div className="max-w-md mx-auto">
         <div className="text-center mb-8 pt-6 relative">
@@ -236,49 +322,49 @@ const LifeSuccessJourney = () => {
           <button
             onClick={() => setShowSettings(!showSettings)}
             className={`absolute top-6 right-0 p-2 rounded-full transition-all ${
-              darkMode 
-                ? 'bg-white bg-opacity-20 hover:bg-opacity-30 text-white' 
-                : 'bg-black bg-opacity-10 hover:bg-opacity-20 text-black'
+              theme === 'light'
+                ? 'bg-black bg-opacity-10 hover:bg-opacity-20 text-black' 
+                : 'bg-white bg-opacity-20 hover:bg-opacity-30 text-white'
             }`}
           >
             <Settings className="w-5 h-5" />
           </button>
           
           <h1 className="text-4xl font-black uppercase tracking-tight mb-2">
-            Life Success
+            Zen21
           </h1>
-          <div className={`w-16 h-1 mx-auto mb-3 ${darkMode ? 'bg-white' : 'bg-black'}`}></div>
+          <div className={`w-16 h-1 mx-auto mb-3 ${theme === 'light' ? 'bg-black' : 'bg-white'}`}></div>
           <p className={`text-sm uppercase tracking-wide font-medium ${
-            darkMode ? 'text-gray-300' : 'text-gray-600'
+            theme === 'light' ? 'text-gray-600' : 'text-gray-300'
           }`}>21-Day Journey</p>
         </div>
 
         {/* Settings Panel */}
         {showSettings && (
-          <div className={`rounded-none p-6 mb-8 border-4 ${
-            darkMode 
-              ? 'bg-gray-800 border-white' 
-              : 'bg-white border-black'
-          }`}>
+          <div className={`rounded-none p-6 mb-8 border-4 ${currentTheme.border} ${currentTheme.cardBg}`}>
             <h3 className="font-black uppercase tracking-tight mb-4 text-lg">Settings</h3>
             
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                {darkMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-                <span className="font-medium">Theme</span>
+            {/* Theme Selector */}
+            <div className="mb-6">
+              <label className="font-medium mb-3 block">Theme</label>
+              <div className="grid grid-cols-2 gap-2">
+                {Object.entries(themeConfig).map(([key, config]) => (
+                  <button
+                    key={key}
+                    onClick={() => setTheme(key)}
+                    className={`p-3 rounded border-2 font-bold uppercase text-sm transition-all ${
+                      theme === key 
+                        ? `${currentTheme.border} ${currentTheme.btnSecondary}` 
+                        : `border-transparent ${currentTheme.cardBg} opacity-60 hover:opacity-100`
+                    }`}
+                  >
+                    {config.name}
+                  </button>
+                ))}
               </div>
-              <button
-                onClick={() => setDarkMode(!darkMode)}
-                className={`relative w-14 h-7 rounded-full transition-all ${
-                  darkMode ? 'bg-purple-600' : 'bg-gray-300'
-                }`}
-              >
-                <div className={`absolute top-1 w-5 h-5 rounded-full bg-white transition-all ${
-                  darkMode ? 'right-1' : 'left-1'
-                }`}></div>
-              </button>
             </div>
 
+            {/* Notifications Status */}
             <div className="flex items-center justify-between">
               <span className="font-medium">Notifications</span>
               <span className={`text-sm px-3 py-1 rounded ${
@@ -293,11 +379,7 @@ const LifeSuccessJourney = () => {
         )}
 
         {/* Level Badge */}
-        <div className={`rounded-none p-8 mb-8 border-4 ${
-          darkMode 
-            ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white border-purple-400' 
-            : 'bg-black text-white border-black'
-        }`}>
+        <div className={`rounded-none p-8 mb-8 border-4 ${currentTheme.levelBg} text-white ${currentTheme.levelBorder}`}>
           <div className="text-center">
             <div className="text-5xl mb-3">{level.icon}</div>
             <h2 className="text-2xl font-black uppercase tracking-tight mb-2">{level.name}</h2>
@@ -315,11 +397,7 @@ const LifeSuccessJourney = () => {
         </div>
 
         {/* Today's Progress */}
-        <div className={`border-4 rounded-none p-6 mb-8 ${
-          darkMode 
-            ? 'border-white bg-white bg-opacity-10' 
-            : 'border-black bg-white'
-        }`}>
+        <div className={`border-4 rounded-none p-6 mb-8 ${currentTheme.border} ${currentTheme.cardBg}`}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-black uppercase tracking-tight flex items-center gap-2">
               <Target className="w-5 h-5" />
@@ -327,27 +405,21 @@ const LifeSuccessJourney = () => {
             </h3>
             <span className="text-4xl font-black">{todayPercentage}%</span>
           </div>
-          <div className={`h-3 overflow-hidden ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
+          <div className={`h-3 overflow-hidden ${currentTheme.progressBg}`}>
             <div 
-              className={`h-full transition-all duration-500 ${
-                darkMode ? 'bg-purple-500' : 'bg-black'
-              }`}
+              className={`h-full transition-all duration-500 ${currentTheme.progressFill}`}
               style={{ width: `${todayPercentage}%` }}
             />
           </div>
           <p className={`text-center italic text-sm mt-4 font-medium ${
-            darkMode ? 'text-gray-300' : 'text-black'
+            theme === 'light' ? 'text-black' : 'text-gray-300'
           }`}>"{todayQuote}"</p>
         </div>
 
         {/* Activities List */}
         <div className="space-y-4 mb-8">
           {activities.filter(activity => !completedToday.includes(activity.id)).length === 0 ? (
-            <div className={`rounded-none p-10 text-center border-4 ${
-              darkMode 
-                ? 'bg-gradient-to-br from-green-600 to-emerald-600 text-white border-green-400' 
-                : 'bg-black text-white border-black'
-            }`}>
+            <div className={`rounded-none p-10 text-center border-4 text-white ${currentTheme.completionBg}`}>
               <div className="text-6xl mb-4">🎉</div>
               <h3 className="text-2xl font-black uppercase mb-3">ALL DONE!</h3>
               <p className="text-lg font-medium">See you tomorrow, champion!</p>
@@ -358,11 +430,7 @@ const LifeSuccessJourney = () => {
               .map(activity => (
                 <div 
                   key={activity.id}
-                  className={`border-2 rounded-none p-4 transition-all group ${
-                    darkMode 
-                      ? 'border-white hover:bg-white hover:text-black' 
-                      : 'border-black hover:bg-black hover:text-white'
-                  }`}
+                  className={`border-2 rounded-none p-4 transition-all group ${currentTheme.border} ${currentTheme.hoverBg}`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4 flex-1">
@@ -402,11 +470,7 @@ const LifeSuccessJourney = () => {
                     <div className="flex items-center gap-3">
                       <button
                         onClick={() => toggleActivity(activity.id)}
-                        className={`w-12 h-12 border-2 rounded-full flex items-center justify-center transition-all ${
-                          darkMode 
-                            ? 'border-white group-hover:border-black group-hover:bg-black group-hover:text-white' 
-                            : 'border-black group-hover:border-white group-hover:bg-white group-hover:text-black'
-                        }`}
+                        className={`w-12 h-12 border-2 rounded-full flex items-center justify-center transition-all ${currentTheme.border} group-hover:border-current`}
                       >
                         <span className="text-xl">✓</span>
                       </button>
@@ -414,9 +478,9 @@ const LifeSuccessJourney = () => {
                         <button
                           onClick={() => deleteActivity(activity.id)}
                           className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                            darkMode 
-                              ? 'bg-white text-black group-hover:bg-black group-hover:text-white' 
-                              : 'bg-black text-white group-hover:bg-white group-hover:text-black'
+                            theme === 'light' 
+                              ? 'bg-black text-white group-hover:bg-white group-hover:text-black' 
+                              : 'bg-white text-black group-hover:bg-black group-hover:text-white'
                           }`}
                         >
                           <Trash2 className="w-4 h-4" />
@@ -433,11 +497,7 @@ const LifeSuccessJourney = () => {
         {!showAddForm && (
           <button
             onClick={() => setShowAddForm(true)}
-            className={`w-full rounded-none p-4 font-black uppercase tracking-wide flex items-center justify-center gap-2 transition-all mb-4 border-4 ${
-              darkMode 
-                ? 'bg-white text-black border-white hover:bg-gray-200' 
-                : 'bg-black text-white border-black hover:bg-gray-800'
-            }`}
+            className={`w-full rounded-none p-4 font-black uppercase tracking-wide flex items-center justify-center gap-2 transition-all mb-4 border-4 text-white ${currentTheme.btnPrimary} hover:opacity-90`}
           >
             <Plus className="w-5 h-5" />
             Add Activity
@@ -446,33 +506,21 @@ const LifeSuccessJourney = () => {
 
         {/* Add Activity Form */}
         {showAddForm && (
-          <div className={`border-4 rounded-none p-6 mb-4 ${
-            darkMode 
-              ? 'border-white bg-gray-800 text-white' 
-              : 'border-black bg-white text-black'
-          }`}>
+          <div className={`border-4 rounded-none p-6 mb-4 ${currentTheme.border} ${currentTheme.cardBg}`}>
             <h3 className="font-black uppercase tracking-tight mb-4 text-lg">New Activity</h3>
             <input
               type="text"
               placeholder="ACTIVITY NAME"
               value={newActivity.name}
               onChange={(e) => setNewActivity({...newActivity, name: e.target.value})}
-              className={`w-full border-2 rounded-none p-3 mb-3 uppercase font-medium focus:outline-none ${
-                darkMode 
-                  ? 'border-white bg-gray-700 text-white placeholder-gray-400 focus:border-gray-400' 
-                  : 'border-black bg-white text-black placeholder-gray-400 focus:border-gray-600'
-              }`}
+              className={`w-full border-2 rounded-none p-3 mb-3 uppercase font-medium focus:outline-none placeholder-gray-400 ${currentTheme.inputBorder} ${currentTheme.inputBg} ${currentTheme.text}`}
             />
             <input
               type="text"
               placeholder="ICON (EMOJI)"
               value={newActivity.icon}
               onChange={(e) => setNewActivity({...newActivity, icon: e.target.value})}
-              className={`w-full border-2 rounded-none p-3 mb-3 uppercase font-medium focus:outline-none ${
-                darkMode 
-                  ? 'border-white bg-gray-700 text-white placeholder-gray-400 focus:border-gray-400' 
-                  : 'border-black bg-white text-black placeholder-gray-400 focus:border-gray-600'
-              }`}
+              className={`w-full border-2 rounded-none p-3 mb-3 uppercase font-medium focus:outline-none placeholder-gray-400 ${currentTheme.inputBorder} ${currentTheme.inputBg} ${currentTheme.text}`}
             />
             <div className="grid grid-cols-2 gap-3 mb-4">
               <div>
@@ -481,11 +529,7 @@ const LifeSuccessJourney = () => {
                   type="time"
                   value={newActivity.startTime}
                   onChange={(e) => setNewActivity({...newActivity, startTime: e.target.value})}
-                  className={`w-full border-2 rounded-none p-3 font-medium focus:outline-none ${
-                    darkMode 
-                      ? 'border-white bg-gray-700 text-white focus:border-gray-400' 
-                      : 'border-black bg-white text-black focus:border-gray-600'
-                  }`}
+                  className={`w-full border-2 rounded-none p-3 font-medium focus:outline-none ${currentTheme.inputBorder} ${currentTheme.inputBg} ${currentTheme.text}`}
                 />
               </div>
               <div>
@@ -494,32 +538,20 @@ const LifeSuccessJourney = () => {
                   type="time"
                   value={newActivity.endTime}
                   onChange={(e) => setNewActivity({...newActivity, endTime: e.target.value})}
-                  className={`w-full border-2 rounded-none p-3 font-medium focus:outline-none ${
-                    darkMode 
-                      ? 'border-white bg-gray-700 text-white focus:border-gray-400' 
-                      : 'border-black bg-white text-black focus:border-gray-600'
-                  }`}
+                  className={`w-full border-2 rounded-none p-3 font-medium focus:outline-none ${currentTheme.inputBorder} ${currentTheme.inputBg} ${currentTheme.text}`}
                 />
               </div>
             </div>
             <div className="flex gap-3">
               <button
                 onClick={addActivity}
-                className={`flex-1 rounded-none p-3 font-black uppercase transition-all ${
-                  darkMode 
-                    ? 'bg-white text-black hover:bg-gray-200' 
-                    : 'bg-black text-white hover:bg-gray-800'
-                }`}
+                className={`flex-1 rounded-none p-3 font-black uppercase transition-all ${currentTheme.btnSecondary} border-2 ${currentTheme.border}`}
               >
                 Add
               </button>
               <button
                 onClick={() => setShowAddForm(false)}
-                className={`flex-1 border-2 rounded-none p-3 font-black uppercase transition-all ${
-                  darkMode 
-                    ? 'border-white text-white hover:bg-white hover:text-black' 
-                    : 'border-black text-black hover:bg-black hover:text-white'
-                }`}
+                className={`flex-1 border-2 rounded-none p-3 font-black uppercase transition-all ${currentTheme.border} ${currentTheme.hoverBg}`}
               >
                 Cancel
               </button>
@@ -530,11 +562,7 @@ const LifeSuccessJourney = () => {
         {/* Complete Day Button */}
         <button
           onClick={completeDay}
-          className={`w-full rounded-none p-5 font-black uppercase text-lg tracking-wide flex items-center justify-center gap-3 transition-all mb-4 border-4 ${
-            darkMode 
-              ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-purple-400 hover:from-purple-700 hover:to-indigo-700' 
-              : 'bg-black text-white border-black hover:bg-gray-800'
-          }`}
+          className={`w-full rounded-none p-5 font-black uppercase text-lg tracking-wide flex items-center justify-center gap-3 transition-all mb-4 border-4 text-white ${currentTheme.btnPrimary} hover:opacity-90`}
         >
           <Trophy className="w-6 h-6" />
           Complete Day {currentDay}
@@ -543,22 +571,14 @@ const LifeSuccessJourney = () => {
         {/* Reset Button */}
         <button
           onClick={resetCycle}
-          className={`w-full border-2 rounded-none p-3 text-sm font-black uppercase tracking-wide transition-all mb-8 ${
-            darkMode 
-              ? 'border-white text-white hover:bg-white hover:text-black' 
-              : 'border-black text-black hover:bg-black hover:text-white'
-          }`}
+          className={`w-full border-2 rounded-none p-3 text-sm font-black uppercase tracking-wide transition-all mb-8 ${currentTheme.border} ${currentTheme.hoverBg}`}
         >
           Reset Cycle
         </button>
 
         {/* Cycle Progress */}
         {cycleData.length > 0 && (
-          <div className={`border-4 rounded-none p-6 mb-8 ${
-            darkMode 
-              ? 'border-white bg-gray-800' 
-              : 'border-black bg-white'
-          }`}>
+          <div className={`border-4 rounded-none p-6 mb-8 ${currentTheme.border} ${currentTheme.cardBg}`}>
             <h3 className="font-black uppercase tracking-tight mb-4 flex items-center gap-2 text-lg">
               <Star className="w-5 h-5" />
               History
@@ -568,13 +588,13 @@ const LifeSuccessJourney = () => {
                 <div key={idx} className="text-center">
                   <div 
                     className={`w-12 h-12 border-2 flex items-center justify-center text-xs font-black ${
-                      darkMode 
-                        ? day.percentage >= 80 ? 'bg-green-600 text-white border-green-400' :
-                          day.percentage >= 50 ? 'bg-yellow-600 text-white border-yellow-400' :
-                          'bg-red-600 text-white border-red-400'
-                        : day.percentage >= 80 ? 'bg-black text-white border-black' :
+                      theme === 'light' 
+                        ? day.percentage >= 80 ? 'bg-black text-white border-black' :
                           day.percentage >= 50 ? 'bg-gray-300 text-black border-black' :
                           'bg-white text-black border-black'
+                        : day.percentage >= 80 ? 'bg-green-600 text-white border-green-400' :
+                          day.percentage >= 50 ? 'bg-yellow-600 text-white border-yellow-400' :
+                          'bg-red-600 text-white border-red-400'
                     }`}
                   >
                     {day.percentage}%
@@ -587,13 +607,11 @@ const LifeSuccessJourney = () => {
         )}
 
         {/* Footer */}
-        <div className={`text-center text-xs pt-6 border-t-2 ${
-          darkMode 
-            ? 'text-gray-400 border-white' 
-            : 'text-gray-600 border-black'
+        <div className={`text-center text-xs pt-6 border-t-2 ${currentTheme.border} ${
+          theme === 'light' ? 'text-gray-600' : 'text-gray-400'
         }`}>
           <p className="uppercase tracking-wide font-medium">Developed by <a href="https://github.com/salmanck66" target="_blank" rel="noopener noreferrer" className={`font-black hover:underline ${
-            darkMode ? 'text-white' : 'text-black'
+            theme === 'light' ? 'text-black' : 'text-white'
           }`}>SALMANCK66</a></p>
           <p className="mt-1 uppercase tracking-wide">More apps on GitHub</p>
         </div>
