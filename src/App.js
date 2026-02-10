@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, Plus, Trash2, Trophy, Target, Star, Settings, Moon, Sun } from 'lucide-react';
+import { Clock, Plus, Trash2, Trophy, Target, Star, Settings } from 'lucide-react';
 
 const defaultActivities = [
   { id: 1, name: 'Wake Up', time: '06:00', icon: '🌅', isPermanent: true, type: 'single' },
@@ -123,8 +123,6 @@ const LifeSuccessJourney = () => {
     }
   };
 
-  const currentTheme = themeConfig[theme];
-
   const getLevelInfo = (completedDays) => {
     if (completedDays >= 30) return { name: 'Zen Master', icon: '🧘', color: 'from-purple-500 to-pink-500', days: 30 };
     if (completedDays >= 21) return { name: 'Master', icon: '👑', color: 'from-yellow-400 to-orange-500', days: 21 };
@@ -142,6 +140,9 @@ const LifeSuccessJourney = () => {
   const [theme, setTheme] = useState('dark'); // 'dark', 'light', 'ocean', 'forest', 'sunset'
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [newActivity, setNewActivity] = useState({ name: '', startTime: '', endTime: '', icon: '✨' });
+
+  // Get current theme configuration
+  const currentTheme = themeConfig[theme];
 
   // Load data from localStorage
   useEffect(() => {
@@ -331,7 +332,7 @@ const LifeSuccessJourney = () => {
           </button>
           
           <h1 className="text-4xl font-black uppercase tracking-tight mb-2">
-            Zen21
+            Life Success
           </h1>
           <div className={`w-16 h-1 mx-auto mb-3 ${theme === 'light' ? 'bg-black' : 'bg-white'}`}></div>
           <p className={`text-sm uppercase tracking-wide font-medium ${
