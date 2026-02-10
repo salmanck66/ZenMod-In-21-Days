@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, Plus, Trash2, Trophy, Target, Star } from 'lucide-react';
+import { Clock, Plus, Trash2, Trophy, Target, Star, Settings, Moon, Sun } from 'lucide-react';
 
 const defaultActivities = [
   { id: 1, name: 'Wake Up', time: '06:00', icon: '🌅', isPermanent: true, type: 'single' },
@@ -48,6 +48,8 @@ const LifeSuccessJourney = () => {
   const [cycleData, setCycleData] = useState([]);
   const [currentDay, setCurrentDay] = useState(1);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [newActivity, setNewActivity] = useState({ name: '', startTime: '', endTime: '', icon: '✨' });
 
@@ -60,6 +62,7 @@ const LifeSuccessJourney = () => {
       setCycleData(data.cycleData || []);
       setCurrentDay(data.currentDay || 1);
       setCompletedToday(data.completedToday || []);
+      setDarkMode(data.darkMode || false);
     } else {
       setActivities(defaultActivities);
     }
@@ -81,9 +84,10 @@ const LifeSuccessJourney = () => {
       cycleData,
       currentDay,
       completedToday,
+      darkMode,
       lastSaved: new Date().toISOString()
     }));
-  }, [activities, cycleData, currentDay, completedToday]);
+  }, [activities, cycleData, currentDay, completedToday, darkMode]);
 
   // Check for notifications
   useEffect(() => {
@@ -220,19 +224,80 @@ const LifeSuccessJourney = () => {
   const todayQuote = motivationalQuotes[currentDay % motivationalQuotes.length];
 
   return (
-    <div className="min-h-screen bg-white text-black p-4 pb-20">
+    <div className={`min-h-screen p-4 pb-20 transition-colors duration-300 ${
+      darkMode 
+        ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 text-white' 
+        : 'bg-white text-black'
+    }`}>
       {/* Header */}
       <div className="max-w-md mx-auto">
-        <div className="text-center mb-8 pt-6">
+        <div className="text-center mb-8 pt-6 relative">
+          {/* Settings Button */}
+          <button
+            onClick={() => setShowSettings(!showSettings)}
+            className={`absolute top-6 right-0 p-2 rounded-full transition-all ${
+              darkMode 
+                ? 'bg-white bg-opacity-20 hover:bg-opacity-30 text-white' 
+                : 'bg-black bg-opacity-10 hover:bg-opacity-20 text-black'
+            }`}
+          >
+            <Settings className="w-5 h-5" />
+          </button>
+          
           <h1 className="text-4xl font-black uppercase tracking-tight mb-2">
-            Zen21
+            Life Success
           </h1>
-          <div className="w-16 h-1 bg-black mx-auto mb-3"></div>
-          <p className="text-sm text-gray-600 uppercase tracking-wide font-medium">21-Day Journey</p>
+          <div className={`w-16 h-1 mx-auto mb-3 ${darkMode ? 'bg-white' : 'bg-black'}`}></div>
+          <p className={`text-sm uppercase tracking-wide font-medium ${
+            darkMode ? 'text-gray-300' : 'text-gray-600'
+          }`}>21-Day Journey</p>
         </div>
 
+        {/* Settings Panel */}
+        {showSettings && (
+          <div className={`rounded-none p-6 mb-8 border-4 ${
+            darkMode 
+              ? 'bg-gray-800 border-white' 
+              : 'bg-white border-black'
+          }`}>
+            <h3 className="font-black uppercase tracking-tight mb-4 text-lg">Settings</h3>
+            
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                {darkMode ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+                <span className="font-medium">Theme</span>
+              </div>
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className={`relative w-14 h-7 rounded-full transition-all ${
+                  darkMode ? 'bg-purple-600' : 'bg-gray-300'
+                }`}
+              >
+                <div className={`absolute top-1 w-5 h-5 rounded-full bg-white transition-all ${
+                  darkMode ? 'right-1' : 'left-1'
+                }`}></div>
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <span className="font-medium">Notifications</span>
+              <span className={`text-sm px-3 py-1 rounded ${
+                notificationsEnabled 
+                  ? 'bg-green-500 text-white' 
+                  : 'bg-red-500 text-white'
+              }`}>
+                {notificationsEnabled ? 'Enabled' : 'Disabled'}
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Level Badge */}
-        <div className="bg-black text-white rounded-none p-8 mb-8 border-4 border-black">
+        <div className={`rounded-none p-8 mb-8 border-4 ${
+          darkMode 
+            ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white border-purple-400' 
+            : 'bg-black text-white border-black'
+        }`}>
           <div className="text-center">
             <div className="text-5xl mb-3">{level.icon}</div>
             <h2 className="text-2xl font-black uppercase tracking-tight mb-2">{level.name}</h2>
@@ -250,7 +315,11 @@ const LifeSuccessJourney = () => {
         </div>
 
         {/* Today's Progress */}
-        <div className="border-4 border-black rounded-none p-6 mb-8">
+        <div className={`border-4 rounded-none p-6 mb-8 ${
+          darkMode 
+            ? 'border-white bg-white bg-opacity-10' 
+            : 'border-black bg-white'
+        }`}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-black uppercase tracking-tight flex items-center gap-2">
               <Target className="w-5 h-5" />
@@ -258,19 +327,27 @@ const LifeSuccessJourney = () => {
             </h3>
             <span className="text-4xl font-black">{todayPercentage}%</span>
           </div>
-          <div className="bg-gray-200 h-3 overflow-hidden">
+          <div className={`h-3 overflow-hidden ${darkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
             <div 
-              className="h-full bg-black transition-all duration-500"
+              className={`h-full transition-all duration-500 ${
+                darkMode ? 'bg-purple-500' : 'bg-black'
+              }`}
               style={{ width: `${todayPercentage}%` }}
             />
           </div>
-          <p className="text-center text-black italic text-sm mt-4 font-medium">"{todayQuote}"</p>
+          <p className={`text-center italic text-sm mt-4 font-medium ${
+            darkMode ? 'text-gray-300' : 'text-black'
+          }`}>"{todayQuote}"</p>
         </div>
 
         {/* Activities List */}
         <div className="space-y-4 mb-8">
           {activities.filter(activity => !completedToday.includes(activity.id)).length === 0 ? (
-            <div className="bg-black text-white rounded-none p-10 text-center">
+            <div className={`rounded-none p-10 text-center border-4 ${
+              darkMode 
+                ? 'bg-gradient-to-br from-green-600 to-emerald-600 text-white border-green-400' 
+                : 'bg-black text-white border-black'
+            }`}>
               <div className="text-6xl mb-4">🎉</div>
               <h3 className="text-2xl font-black uppercase mb-3">ALL DONE!</h3>
               <p className="text-lg font-medium">See you tomorrow, champion!</p>
@@ -281,7 +358,11 @@ const LifeSuccessJourney = () => {
               .map(activity => (
                 <div 
                   key={activity.id}
-                  className="border-2 border-black rounded-none p-4 transition-all hover:bg-black hover:text-white group"
+                  className={`border-2 rounded-none p-4 transition-all group ${
+                    darkMode 
+                      ? 'border-white hover:bg-white hover:text-black' 
+                      : 'border-black hover:bg-black hover:text-white'
+                  }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4 flex-1">
@@ -321,14 +402,22 @@ const LifeSuccessJourney = () => {
                     <div className="flex items-center gap-3">
                       <button
                         onClick={() => toggleActivity(activity.id)}
-                        className="w-12 h-12 border-2 border-black group-hover:border-white rounded-full flex items-center justify-center transition-all hover:bg-white hover:text-black"
+                        className={`w-12 h-12 border-2 rounded-full flex items-center justify-center transition-all ${
+                          darkMode 
+                            ? 'border-white group-hover:border-black group-hover:bg-black group-hover:text-white' 
+                            : 'border-black group-hover:border-white group-hover:bg-white group-hover:text-black'
+                        }`}
                       >
                         <span className="text-xl">✓</span>
                       </button>
                       {!activity.isPermanent && (
                         <button
                           onClick={() => deleteActivity(activity.id)}
-                          className="w-10 h-10 bg-black text-white group-hover:bg-white group-hover:text-black rounded-full flex items-center justify-center transition-all"
+                          className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                            darkMode 
+                              ? 'bg-white text-black group-hover:bg-black group-hover:text-white' 
+                              : 'bg-black text-white group-hover:bg-white group-hover:text-black'
+                          }`}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -344,7 +433,11 @@ const LifeSuccessJourney = () => {
         {!showAddForm && (
           <button
             onClick={() => setShowAddForm(true)}
-            className="w-full bg-black text-white rounded-none p-4 font-black uppercase tracking-wide flex items-center justify-center gap-2 hover:bg-gray-800 transition-all mb-4 border-4 border-black"
+            className={`w-full rounded-none p-4 font-black uppercase tracking-wide flex items-center justify-center gap-2 transition-all mb-4 border-4 ${
+              darkMode 
+                ? 'bg-white text-black border-white hover:bg-gray-200' 
+                : 'bg-black text-white border-black hover:bg-gray-800'
+            }`}
           >
             <Plus className="w-5 h-5" />
             Add Activity
@@ -353,21 +446,33 @@ const LifeSuccessJourney = () => {
 
         {/* Add Activity Form */}
         {showAddForm && (
-          <div className="border-4 border-black rounded-none p-6 mb-4 bg-white">
+          <div className={`border-4 rounded-none p-6 mb-4 ${
+            darkMode 
+              ? 'border-white bg-gray-800 text-white' 
+              : 'border-black bg-white text-black'
+          }`}>
             <h3 className="font-black uppercase tracking-tight mb-4 text-lg">New Activity</h3>
             <input
               type="text"
               placeholder="ACTIVITY NAME"
               value={newActivity.name}
               onChange={(e) => setNewActivity({...newActivity, name: e.target.value})}
-              className="w-full border-2 border-black rounded-none p-3 mb-3 text-black placeholder-gray-400 uppercase font-medium focus:outline-none focus:border-gray-600"
+              className={`w-full border-2 rounded-none p-3 mb-3 uppercase font-medium focus:outline-none ${
+                darkMode 
+                  ? 'border-white bg-gray-700 text-white placeholder-gray-400 focus:border-gray-400' 
+                  : 'border-black bg-white text-black placeholder-gray-400 focus:border-gray-600'
+              }`}
             />
             <input
               type="text"
               placeholder="ICON (EMOJI)"
               value={newActivity.icon}
               onChange={(e) => setNewActivity({...newActivity, icon: e.target.value})}
-              className="w-full border-2 border-black rounded-none p-3 mb-3 text-black placeholder-gray-400 uppercase font-medium focus:outline-none focus:border-gray-600"
+              className={`w-full border-2 rounded-none p-3 mb-3 uppercase font-medium focus:outline-none ${
+                darkMode 
+                  ? 'border-white bg-gray-700 text-white placeholder-gray-400 focus:border-gray-400' 
+                  : 'border-black bg-white text-black placeholder-gray-400 focus:border-gray-600'
+              }`}
             />
             <div className="grid grid-cols-2 gap-3 mb-4">
               <div>
@@ -376,7 +481,11 @@ const LifeSuccessJourney = () => {
                   type="time"
                   value={newActivity.startTime}
                   onChange={(e) => setNewActivity({...newActivity, startTime: e.target.value})}
-                  className="w-full border-2 border-black rounded-none p-3 text-black font-medium focus:outline-none focus:border-gray-600"
+                  className={`w-full border-2 rounded-none p-3 font-medium focus:outline-none ${
+                    darkMode 
+                      ? 'border-white bg-gray-700 text-white focus:border-gray-400' 
+                      : 'border-black bg-white text-black focus:border-gray-600'
+                  }`}
                 />
               </div>
               <div>
@@ -385,20 +494,32 @@ const LifeSuccessJourney = () => {
                   type="time"
                   value={newActivity.endTime}
                   onChange={(e) => setNewActivity({...newActivity, endTime: e.target.value})}
-                  className="w-full border-2 border-black rounded-none p-3 text-black font-medium focus:outline-none focus:border-gray-600"
+                  className={`w-full border-2 rounded-none p-3 font-medium focus:outline-none ${
+                    darkMode 
+                      ? 'border-white bg-gray-700 text-white focus:border-gray-400' 
+                      : 'border-black bg-white text-black focus:border-gray-600'
+                  }`}
                 />
               </div>
             </div>
             <div className="flex gap-3">
               <button
                 onClick={addActivity}
-                className="flex-1 bg-black text-white rounded-none p-3 font-black uppercase hover:bg-gray-800 transition-all"
+                className={`flex-1 rounded-none p-3 font-black uppercase transition-all ${
+                  darkMode 
+                    ? 'bg-white text-black hover:bg-gray-200' 
+                    : 'bg-black text-white hover:bg-gray-800'
+                }`}
               >
                 Add
               </button>
               <button
                 onClick={() => setShowAddForm(false)}
-                className="flex-1 border-2 border-black text-black rounded-none p-3 font-black uppercase hover:bg-black hover:text-white transition-all"
+                className={`flex-1 border-2 rounded-none p-3 font-black uppercase transition-all ${
+                  darkMode 
+                    ? 'border-white text-white hover:bg-white hover:text-black' 
+                    : 'border-black text-black hover:bg-black hover:text-white'
+                }`}
               >
                 Cancel
               </button>
@@ -409,7 +530,11 @@ const LifeSuccessJourney = () => {
         {/* Complete Day Button */}
         <button
           onClick={completeDay}
-          className="w-full bg-black text-white rounded-none p-5 font-black uppercase text-lg tracking-wide flex items-center justify-center gap-3 hover:bg-gray-800 transition-all mb-4 border-4 border-black"
+          className={`w-full rounded-none p-5 font-black uppercase text-lg tracking-wide flex items-center justify-center gap-3 transition-all mb-4 border-4 ${
+            darkMode 
+              ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-purple-400 hover:from-purple-700 hover:to-indigo-700' 
+              : 'bg-black text-white border-black hover:bg-gray-800'
+          }`}
         >
           <Trophy className="w-6 h-6" />
           Complete Day {currentDay}
@@ -418,14 +543,22 @@ const LifeSuccessJourney = () => {
         {/* Reset Button */}
         <button
           onClick={resetCycle}
-          className="w-full border-2 border-black text-black rounded-none p-3 text-sm font-black uppercase tracking-wide hover:bg-black hover:text-white transition-all mb-8"
+          className={`w-full border-2 rounded-none p-3 text-sm font-black uppercase tracking-wide transition-all mb-8 ${
+            darkMode 
+              ? 'border-white text-white hover:bg-white hover:text-black' 
+              : 'border-black text-black hover:bg-black hover:text-white'
+          }`}
         >
           Reset Cycle
         </button>
 
         {/* Cycle Progress */}
         {cycleData.length > 0 && (
-          <div className="border-4 border-black rounded-none p-6 mb-8 bg-white">
+          <div className={`border-4 rounded-none p-6 mb-8 ${
+            darkMode 
+              ? 'border-white bg-gray-800' 
+              : 'border-black bg-white'
+          }`}>
             <h3 className="font-black uppercase tracking-tight mb-4 flex items-center gap-2 text-lg">
               <Star className="w-5 h-5" />
               History
@@ -434,10 +567,14 @@ const LifeSuccessJourney = () => {
               {cycleData.map((day, idx) => (
                 <div key={idx} className="text-center">
                   <div 
-                    className={`w-12 h-12 border-2 border-black flex items-center justify-center text-xs font-black ${
-                      day.percentage >= 80 ? 'bg-black text-white' :
-                      day.percentage >= 50 ? 'bg-gray-300 text-black' :
-                      'bg-white text-black'
+                    className={`w-12 h-12 border-2 flex items-center justify-center text-xs font-black ${
+                      darkMode 
+                        ? day.percentage >= 80 ? 'bg-green-600 text-white border-green-400' :
+                          day.percentage >= 50 ? 'bg-yellow-600 text-white border-yellow-400' :
+                          'bg-red-600 text-white border-red-400'
+                        : day.percentage >= 80 ? 'bg-black text-white border-black' :
+                          day.percentage >= 50 ? 'bg-gray-300 text-black border-black' :
+                          'bg-white text-black border-black'
                     }`}
                   >
                     {day.percentage}%
@@ -450,8 +587,14 @@ const LifeSuccessJourney = () => {
         )}
 
         {/* Footer */}
-        <div className="text-center text-gray-600 text-xs pt-6 border-t-2 border-black">
-          <p className="uppercase tracking-wide font-medium">Developed by <a href="https://github.com/salmanck66" target="_blank" rel="noopener noreferrer" className="text-black font-black hover:underline">SALMANCK66</a></p>
+        <div className={`text-center text-xs pt-6 border-t-2 ${
+          darkMode 
+            ? 'text-gray-400 border-white' 
+            : 'text-gray-600 border-black'
+        }`}>
+          <p className="uppercase tracking-wide font-medium">Developed by <a href="https://github.com/salmanck66" target="_blank" rel="noopener noreferrer" className={`font-black hover:underline ${
+            darkMode ? 'text-white' : 'text-black'
+          }`}>SALMANCK66</a></p>
           <p className="mt-1 uppercase tracking-wide">More apps on GitHub</p>
         </div>
       </div>
